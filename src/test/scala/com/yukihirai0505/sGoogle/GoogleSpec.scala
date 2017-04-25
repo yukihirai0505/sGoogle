@@ -15,7 +15,7 @@ class GoogleSpec extends FlatSpec with Matchers {
   private def readTestDataFromConfig(): Map[String, String] = {
     Try {
       val testDataFile = Source.fromURL(getClass.getResource("/testData.txt")).mkString
-      val testData = testDataFile.split(",").toSeq
+      val testData = testDataFile.split("\n").toSeq
       Map(testData map { a =>
         val data = a.split("=")
         data(0) -> data(1)
