@@ -45,7 +45,7 @@ class GoogleAuth {
    * @param code         Authentication code. You can retrieve it via codeURL.
    * @return             Future of Response[Authentication]
    */
-  def requestToken(clientId: String, clientSecret: String, redirectURI: String, code: String): Future[Response[Auth]] = {
+  def requestToken(clientId: String, clientSecret: String, redirectURI: String, code: String): Future[Response[OAuth]] = {
     val params = Map(
       OAuthConstants.CLIENT_ID -> clientId,
       OAuthConstants.CLIENT_SECRET -> clientSecret,
