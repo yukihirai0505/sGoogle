@@ -25,4 +25,5 @@ TODO
 ## Reference
 
 [Google OpenID Connect](https://developers.google.com/identity/protocols/OpenIDConnect)
+
 [Google Calendar API](https://developers.google.com/google-apps/calendar/v3/reference/)
