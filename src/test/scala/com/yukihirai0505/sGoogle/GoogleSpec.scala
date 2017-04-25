@@ -1,16 +1,28 @@
 package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.model.Scope
+import com.yukihirai0505.sGoogle.responses.auth.OAuth
+import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.concurrent.Await
 import scala.io.Source
 import scala.language.postfixOps
 import scala.util.Try
+import scala.concurrent.duration.Duration
 
 /**
   * Created by yuky on 2017/04/25.
   */
 class GoogleSpec extends FlatSpec with Matchers {
+
+  private def anInstanceOf[T](implicit tag: reflect.ClassTag[T]) = {
+    val clazz = tag.runtimeClass.asInstanceOf[Class[T]]
+    new BePropertyMatcher[AnyRef] {
+      def apply(left: AnyRef) =
+        BePropertyMatchResult(left.getClass.isAssignableFrom(clazz), "an instance of " + clazz.getName)
+    }
+  }
 
   private def readTestDataFromConfig(): Map[String, String] = {
     Try {
@@ -43,5 +55,15 @@ class GoogleSpec extends FlatSpec with Matchers {
     println(authUrl)
     assert(authUrl.nonEmpty)
   }
+
+  /***
+  // TODO: get code
+  "Request AccessToken" should "return accessToken" in {
+    val tmpCode = ""
+    val request = Await.result(auth.requestToken(tmpCode, clientId, clientSecret, redirectUri), Duration.Inf)
+    request.foreach(v => println(v.accessToken))
+    request should be(anInstanceOf[Some[OAuth]])
+  }
+  ***/
 
 }

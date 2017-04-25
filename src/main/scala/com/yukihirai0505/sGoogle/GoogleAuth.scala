@@ -1,14 +1,9 @@
 package com.yukihirai0505.sGoogle
 
-import com.ning.http.client.FluentCaseInsensitiveStringsMap
-import com.yukihirai0505.sGoogle.http.Response
+import com.yukihirai0505.sGoogle.http.{Request, Verbs}
 import com.yukihirai0505.sGoogle.model.{Constants, OAuthConstants, Scope}
 import com.yukihirai0505.sGoogle.responses.auth._
-import dispatch.Defaults._
 import dispatch._
-import play.api.libs.json.Json
-
-import scala.collection.JavaConverters._
 
 class GoogleAuth {
 
@@ -45,28 +40,18 @@ class GoogleAuth {
    * @param code         Authentication code. You can retrieve it via codeURL.
    * @return             Future of Response[Authentication]
    */
-  def requestToken(clientId: String, clientSecret: String, redirectURI: String, code: String): Future[Response[OAuth]] = {
+  def requestToken(code: String, clientId: String, clientSecret: String, redirectURI: String): Future[Option[OAuth]] = {
     val params = Map(
+      OAuthConstants.CODE -> code,
       OAuthConstants.CLIENT_ID -> clientId,
       OAuthConstants.CLIENT_SECRET -> clientSecret,
       OAuthConstants.REDIRECT_URI -> redirectURI,
-      OAuthConstants.CODE -> code
+      OAuthConstants.GRANT_TYPE -> OAuthConstants.AUTHORIZATION_CODE
     )
-    val request = url(Constants.ACCESS_TOKEN_ENDPOINT) << params
-    Http(request).map { resp =>
-      val response = resp.getResponseBody
-      val headers = ningHeadersToMap(resp.getHeaders)
-      if (resp.getStatusCode != 200) throw new Exception(response.toString)
-      Json.parse(response).asOpt[OAuth] match {
-        case Some(o: OAuth) => Response(Some(o), resp.getStatusCode, headers)
-        case _ =>
-          Response(None, resp.getStatusCode, headers)
-      }
-    }
-  }
-
-  private def ningHeadersToMap(headers: FluentCaseInsensitiveStringsMap) = {
-    mapAsScalaMapConverter(headers).asScala.map(e => e._1 -> e._2.asScala).toMap
+    val request = url(Constants.ACCESS_TOKEN_ENDPOINT)
+      .setMethod(Verbs.POST.label)
+      .setHeader("Content-Type", "application/x-www-form-urlencoded") << params
+    Request.send[OAuth](request)
   }
 
 }
