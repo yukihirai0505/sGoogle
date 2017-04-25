@@ -8,7 +8,7 @@ import scala.language.postfixOps
 import scala.util.Try
 
 /**
-  * Created by k00068 on 2017/04/25.
+  * Created by yuky on 2017/04/25.
   */
 class GoogleSpec extends FlatSpec with Matchers {
 
