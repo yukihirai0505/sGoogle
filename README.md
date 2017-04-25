@@ -1,4 +1,4 @@
-# sFacebook
+# sGoogle
 
 A Scala library for the Google API.
 An asynchronous non-blocking Scala Google API Wrapper,
