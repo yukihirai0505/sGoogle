@@ -11,7 +11,7 @@ import scala.language.postfixOps
 /**
   * author Yuki Hirai on 2016/11/09.
   */
-class Google {
+class Google(accessToken: String) {
 
   protected def concatMapOpt(postData: Option[Map[String,String]], params: Map[String,Option[String]])
   : Map[String,Option[String]] = postData match {
@@ -24,9 +24,10 @@ class Google {
       case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
       case None => Map.empty
     }
-    // TODO: accessToken??
     val effectiveUrl = s"${Constants.API_URL}$apiPath?"
-    val request: Req = url(effectiveUrl).setMethod(verb.label)
+    val request: Req = url(effectiveUrl)
+      .setMethod(verb.label)
+      .setHeader("Authorization", s"Bearer $accessToken")
     val requestWithParams = if (verb.label == Verbs.GET.label) { request <<? parameters } else { request << parameters }
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
