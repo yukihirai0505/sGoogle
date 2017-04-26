@@ -34,6 +34,9 @@ class Google(accessToken: String) {
     Request.send[T](requestWithParams)
   }
 
+  // TODO: https://developers.google.com/google-apps/calendar/v3/reference/calendarList?hl=ja
+
+  // TODO: option params
   def getCalendarList(calendarId: String = "primary"): Future[Option[CalendarList]] = {
     val apiPath: String = Methods.CALENDAR_LIST format calendarId
     request[CalendarList](Verbs.GET, apiPath)
