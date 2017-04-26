@@ -51,9 +51,37 @@ class Google(accessToken: String) {
     request[CalendarList](Verbs.GET, apiPath)
   }
 
+  // TODO
+  def insertCalendarList() = {
+    val apiPath: String = Methods.CALENDAR_LIST
+    /***
+      *
+    Require
+      defaultReminders[].method email,sms,popup
+      defaultReminders[].minutes o to 40320(4 weeks in minutes)
+      id
+      notificationSettings.notifications[].method email,sms
+      notificationSettings.notifications[].type eventCreation,eventChange,eventCancellation,eventResponse,agenda
+      */
+
+    /***
+      *
+    Optional
+      backgroundColor
+      colorId
+      defaultReminders[]
+      foregroundColor
+      hidden
+      notificationSettings
+      selected
+      summaryOverride
+      */
+
+  }
+
   // TODO: option params
   def listCalendarList(): Future[Option[CalendarListList]] = {
-    val apiPath: String = Methods.CALENDAR_LIST_LIST
+    val apiPath: String = Methods.CALENDAR_LIST
     request[CalendarListList](Verbs.GET, apiPath)
   }
 
