@@ -45,8 +45,8 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
   val clientId: String = testData.getOrElse("clientId", "")
   val clientSecret: String = testData.getOrElse("clientSecret", "")
   val redirectUri: String = testData.getOrElse("redirectUri", "")
-  val googleAccountId: String = testData.getOrElse("googleAccountId", "")
-  val googleAccountPassword: String = testData.getOrElse("password", "")
+  val gmailId: String = testData.getOrElse("gmailId", "")
+  val gmailPassword: String = testData.getOrElse("gmailPassword", "")
   val scopes = Seq(
     Scope.OPEN_ID,
     Scope.EMAIL,
@@ -68,11 +68,11 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     open(authUrl)
 
     waitId(identifierIdKey)
-    findElementById(identifierIdKey).sendKeys(googleAccountId)
+    findElementById(identifierIdKey).sendKeys(gmailId)
     findElementByClassName(nextClass).click()
 
     waitName(passwordKey)
-    findElementByName(passwordKey).sendKeys(googleAccountPassword)
+    findElementByName(passwordKey).sendKeys(gmailPassword)
     findElementByClassName(nextClass).click()
 
     waitUrlContains("code")
