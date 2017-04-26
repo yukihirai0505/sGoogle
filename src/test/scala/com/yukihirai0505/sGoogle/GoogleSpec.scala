@@ -2,6 +2,7 @@ package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.model.Scope
 import com.yukihirai0505.sGoogle.responses.auth.OAuth
+import com.yukihirai0505.sGoogle.responses.calendarList.CalendarList
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
@@ -53,6 +54,7 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
   )
   var authUrl = ""
   var code = ""
+  var accessToken = ""
 
   "Google Auth url" should "return a valid authorization url" in {
     authUrl = auth.authURL(clientId, redirectUri, scopes)
@@ -83,10 +85,16 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
 
   "Request AccessToken" should "return accessToken" in {
     val request = Await.result(auth.requestToken(code, clientId, clientSecret, redirectUri), Duration.Inf)
-    request.foreach(v =>
+    request.foreach { v =>
+      accessToken = v.accessToken
       println(s"accessToken: ${v.accessToken}")
-    )
+    }
     request should be(anInstanceOf[Some[OAuth]])
   }
 
+  "getCalendarList" should "return a Some[CalendarList]" in {
+    val request = Await.result(new Google(accessToken).getCalendarList(), Duration.Inf)
+    request.foreach(v => println(v.summary))
+    request should be(anInstanceOf[Some[CalendarList]])
+  }
 }

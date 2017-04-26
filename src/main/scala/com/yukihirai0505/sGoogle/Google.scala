@@ -1,7 +1,8 @@
 package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.http.{Request, Verbs}
-import com.yukihirai0505.sGoogle.model.{Constants, OAuthConstants}
+import com.yukihirai0505.sGoogle.model.{Constants, Methods, OAuthConstants}
+import com.yukihirai0505.sGoogle.responses.calendarList.CalendarList
 import dispatch._
 import play.api.libs.json.Reads
 
@@ -31,5 +32,10 @@ class Google(accessToken: String) {
     val requestWithParams = if (verb.label == Verbs.GET.label) { request <<? parameters } else { request << parameters }
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
+  }
+
+  def getCalendarList(calendarId: String = "primary"): Future[Option[CalendarList]] = {
+    val apiPath: String = Methods.CALENDAR_LIST format calendarId
+    request[CalendarList](Verbs.GET, apiPath)
   }
 }
