@@ -3,47 +3,48 @@ package helpers
 /**
   * Created by Yuky on 2017/04/26.
   */
-import org.scalatest.selenium.WebBrowser
-import org.openqa.selenium.{By, WebDriver, WebElement}
+
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.support.ui.{ExpectedCondition, WebDriverWait}
+import org.openqa.selenium.{By, WebDriver, WebElement}
+import org.scalatest.selenium.WebBrowser
 
 trait WebHelper extends WebBrowser {
 
-  System.setProperty("webdriver.chrome.driver","src/main/resources/chromedriver")
+  System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver")
 
   val captureDirectory = "src/test/resources"
 
-  implicit val webDriver:WebDriver = new ChromeDriver()
+  implicit val webDriver: WebDriver = new ChromeDriver()
   val delay = 10
   val webDriverWait = new WebDriverWait(webDriver, delay)
 
   setCaptureDir(captureDirectory)
 
-  def snapshot={
+  def snapshot = {
     capture to "MySnapshot.png"
   }
 
-  def open (url : String){
+  def open(url: String) {
     go to url
   }
 
-  def titlePage:String ={
+  def titlePage: String = {
     pageTitle
   }
 
-  def setQueryString (strQuery:String)={
+  def setQueryString(strQuery: String) = {
     clickOn("q")
-    textField("q").value =strQuery
+    textField("q").value = strQuery
     submit()
     Thread.sleep(5000)
   }
 
-  def tearDown:Unit={
+  def tearDown: Unit = {
     quit()
   }
 
-  def waitSeconds(sec:Long)={
+  def waitSeconds(sec: Long) = {
     Thread.sleep(sec)
   }
 
@@ -58,6 +59,7 @@ trait WebHelper extends WebBrowser {
   def findElementByClassName(className: String): WebElement = {
     webDriver.findElement(By.className(className))
   }
+
   def waitId(id: String) = {
     waitBy(By.id(id))
   }

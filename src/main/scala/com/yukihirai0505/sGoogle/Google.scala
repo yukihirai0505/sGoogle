@@ -1,7 +1,7 @@
 package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.http.{Request, Verbs}
-import com.yukihirai0505.sGoogle.model.{Constants, Methods, OAuthConstants}
+import com.yukihirai0505.sGoogle.model.{Constants, Methods}
 import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList}
 import dispatch._
 import play.api.libs.json.Reads
@@ -14,8 +14,8 @@ import scala.language.postfixOps
   */
 class Google(accessToken: String) {
 
-  protected def concatMapOpt(postData: Option[Map[String,String]], params: Map[String,Option[String]])
-  : Map[String,Option[String]] = postData match {
+  protected def concatMapOpt(postData: Option[Map[String, String]], params: Map[String, Option[String]])
+  : Map[String, Option[String]] = postData match {
     case Some(m) => params ++ m.mapValues(Some(_))
     case _ => params
   }
@@ -29,7 +29,11 @@ class Google(accessToken: String) {
     val request: Req = url(effectiveUrl)
       .setMethod(verb.label)
       .setHeader("Authorization", s"Bearer $accessToken")
-    val requestWithParams = if (verb.label == Verbs.GET.label) { request <<? parameters } else { request << parameters }
+    val requestWithParams = if (verb.label == Verbs.GET.label) {
+      request <<? parameters
+    } else {
+      request << parameters
+    }
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
   }

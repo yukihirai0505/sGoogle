@@ -10,6 +10,7 @@ case class OAuth(
 
 import com.github.tototoshi.play.json.JsonNaming
 import play.api.libs.json.Json
+
 object OAuth {
   implicit val OAuthFormat = JsonNaming.snakecase(Json.format[OAuth])
 }
