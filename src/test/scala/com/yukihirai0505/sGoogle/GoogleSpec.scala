@@ -56,6 +56,7 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
 
   "Google Auth url" should "return a valid authorization url" in {
     authUrl = auth.authURL(clientId, redirectUri, scopes)
+    println(s"authUrl: $authUrl")
     assert(authUrl.nonEmpty)
   }
 
@@ -76,13 +77,15 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
 
     waitUrlContains("code")
     code = "code=[^&]+".r.findFirstIn(currentUrl).getOrElse("").split("=")(1)
-    println(code)
+    println(s"code: $code")
     assert(code.nonEmpty)
   }
 
   "Request AccessToken" should "return accessToken" in {
     val request = Await.result(auth.requestToken(code, clientId, clientSecret, redirectUri), Duration.Inf)
-    request.foreach(v => println(v.accessToken))
+    request.foreach(v =>
+      println(s"accessToken: ${v.accessToken}")
+    )
     request should be(anInstanceOf[Some[OAuth]])
   }
 

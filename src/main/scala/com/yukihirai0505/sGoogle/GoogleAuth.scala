@@ -1,5 +1,7 @@
 package com.yukihirai0505.sGoogle
 
+import java.net.URLDecoder
+
 import com.yukihirai0505.sGoogle.http.{Request, Verbs}
 import com.yukihirai0505.sGoogle.model.{Constants, OAuthConstants, Scope}
 import com.yukihirai0505.sGoogle.responses.auth._
@@ -42,7 +44,7 @@ class GoogleAuth {
    */
   def requestToken(code: String, clientId: String, clientSecret: String, redirectURI: String): Future[Option[OAuth]] = {
     val params = Map(
-      OAuthConstants.CODE -> code,
+      OAuthConstants.CODE -> URLDecoder.decode(code, "utf8"),
       OAuthConstants.CLIENT_ID -> clientId,
       OAuthConstants.CLIENT_SECRET -> clientSecret,
       OAuthConstants.REDIRECT_URI -> redirectURI,
