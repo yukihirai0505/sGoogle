@@ -92,6 +92,12 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[OAuth]])
   }
 
+  /***
+  "deleteCalendarList" should "return empty" in {
+    val request = Await.result(new Google(accessToken).deleteCalendarList("TODO"), Duration.Inf)
+    assert(request.isEmpty)
+  }***/
+
   "getCalendarList" should "return a Some[CalendarList]" in {
     val request = Await.result(new Google(accessToken).getCalendarList(), Duration.Inf)
     request.foreach(v => println(v.summary))

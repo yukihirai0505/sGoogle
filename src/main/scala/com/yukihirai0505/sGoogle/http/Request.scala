@@ -16,15 +16,17 @@ object Request {
   def send[T](request: Req)(implicit r: Reads[T]): Future[Option[T]] = {
     Http(request).map { resp =>
       val response = resp.getResponseBody
-      if (resp.getStatusCode != 200) throw new Exception(response.toString)
-      val body = Json.parse(response).validate[T] match {
-        case JsError(e) => throw new Exception(e.toString())
-        case JsSuccess(value, _) => value match {
-          case None => None
-          case _ => Some(value)
+      if (resp.getStatusCode != 200 && resp.getStatusCode != 204) throw new Exception(response.toString)
+      if (response.isEmpty) None
+      else {
+        Json.parse(response).validate[T] match {
+          case JsError(e) => throw new Exception(e.toString())
+          case JsSuccess(value, _) => value match {
+            case None => None
+            case _ => Some(value)
+          }
         }
       }
-      body
     }
   }
 
