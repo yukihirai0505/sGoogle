@@ -2,7 +2,7 @@ package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.http.{Request, Verbs}
 import com.yukihirai0505.sGoogle.model.{Constants, Methods}
-import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList}
+import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList, DefaultReminders, NotificationSettings}
 import dispatch._
 import play.api.libs.json.Reads
 
@@ -51,32 +51,17 @@ class Google(accessToken: String) {
     request[CalendarList](Verbs.GET, apiPath)
   }
 
-  // TODO
-  def insertCalendarList() = {
+  // TODO: option params
+  def insertCalendarList(id: String, defaultReminders: DefaultReminders, notificationSettings: NotificationSettings): Future[Option[CalendarList]] = {
     val apiPath: String = Methods.CALENDAR_LIST
-    /***
-      *
-    Require
-      defaultReminders[].method email,sms,popup
-      defaultReminders[].minutes o to 40320(4 weeks in minutes)
-      id
-      notificationSettings.notifications[].method email,sms
-      notificationSettings.notifications[].type eventCreation,eventChange,eventCancellation,eventResponse,agenda
-      */
-
-    /***
-      *
-    Optional
-      backgroundColor
-      colorId
-      defaultReminders[]
-      foregroundColor
-      hidden
-      notificationSettings
-      selected
-      summaryOverride
-      */
-
+    val params: Map[String, Option[String]] = Map(
+      "defaultReminders[].method" -> defaultReminders.method,
+      "defaultReminders[].minutes" -> defaultReminders.minutes.map(_.toString), // TODO: 0 to 40320
+      "id" -> Some(id),
+      "notificationSettings.notifications[].method" -> notificationSettings.notifications.headOption.flatMap(v => Some(v.method)),
+      "notificationSettings.notifications[].type" -> notificationSettings.notifications.headOption.flatMap(v => Some(v.`type`))
+    )
+    request[CalendarList](Verbs.POST, apiPath, Some(params))
   }
 
   // TODO: option params

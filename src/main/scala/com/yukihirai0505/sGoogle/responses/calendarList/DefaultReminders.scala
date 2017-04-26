@@ -1,8 +1,8 @@
 package com.yukihirai0505.sGoogle.responses.calendarList
 
 case class DefaultReminders(
-                             method: String,
-                             minutes: Int
+                             method: Option[String],
+                             minutes: Option[Int]
                            )
 
 import play.api.libs.json.Json
