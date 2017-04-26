@@ -3,7 +3,6 @@ package com.yukihirai0505.sGoogle
 import com.yukihirai0505.sGoogle.model.Scope
 import com.yukihirai0505.sGoogle.responses.auth.OAuth
 import helpers.WebHelper
-import org.openqa.selenium.By
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -77,6 +76,7 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
 
     waitUrlContains("code")
     code = "code=[^&]+".r.findFirstIn(currentUrl).getOrElse("").split("=")(1)
+    println(code)
     assert(code.nonEmpty)
   }
 

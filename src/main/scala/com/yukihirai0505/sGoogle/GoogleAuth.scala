@@ -49,8 +49,8 @@ class GoogleAuth {
       OAuthConstants.GRANT_TYPE -> OAuthConstants.AUTHORIZATION_CODE
     )
     val request = url(Constants.ACCESS_TOKEN_ENDPOINT)
-      .setMethod(Verbs.POST.label)
-      .setHeader("Content-Type", "application/x-www-form-urlencoded") << params
+      .setHeader("Content-Type", "application/x-www-form-urlencoded")
+      .setMethod(Verbs.POST.label) << params
     Request.send[OAuth](request)
   }
 
