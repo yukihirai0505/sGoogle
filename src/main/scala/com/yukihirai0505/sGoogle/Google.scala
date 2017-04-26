@@ -2,7 +2,7 @@ package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.http.{Request, Verbs}
 import com.yukihirai0505.sGoogle.model.{Constants, Methods, OAuthConstants}
-import com.yukihirai0505.sGoogle.responses.calendarList.CalendarList
+import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList}
 import dispatch._
 import play.api.libs.json.Reads
 
@@ -38,7 +38,14 @@ class Google(accessToken: String) {
 
   // TODO: option params
   def getCalendarList(calendarId: String = "primary"): Future[Option[CalendarList]] = {
-    val apiPath: String = Methods.CALENDAR_LIST format calendarId
+    val apiPath: String = Methods.CALENDAR_LIST_GET format calendarId
     request[CalendarList](Verbs.GET, apiPath)
   }
+
+  // TODO: option params
+  def listCalendarList(): Future[Option[CalendarListList]] = {
+    val apiPath: String = Methods.CALENDAR_LIST_LIST
+    request[CalendarListList](Verbs.GET, apiPath)
+  }
+
 }

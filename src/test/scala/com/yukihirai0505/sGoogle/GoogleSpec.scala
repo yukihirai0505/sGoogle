@@ -2,7 +2,7 @@ package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.model.Scope
 import com.yukihirai0505.sGoogle.responses.auth.OAuth
-import com.yukihirai0505.sGoogle.responses.calendarList.CalendarList
+import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList}
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
@@ -97,4 +97,11 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request.foreach(v => println(v.summary))
     request should be(anInstanceOf[Some[CalendarList]])
   }
+
+  "getCalendarListList" should "return a Some[CalendarListList]" in {
+    val request = Await.result(new Google(accessToken).listCalendarList(), Duration.Inf)
+    request.foreach(v => v.items.foreach(v => println(v.summary)))
+    request should be(anInstanceOf[Some[CalendarListList]])
+  }
+
 }

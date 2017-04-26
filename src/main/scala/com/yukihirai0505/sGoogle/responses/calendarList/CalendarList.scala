@@ -16,8 +16,8 @@ case class CalendarList(
                   selected: Boolean,
                   accessRole: String,
                   defaultReminders: Seq[DefaultReminders],
-                  notificationSettings: NotificationSettings,
-                  primary: Boolean,
+                  notificationSettings: Option[NotificationSettings],
+                  primary: Option[Boolean],
                   deleted: Option[Boolean]
                 )
 
