@@ -20,19 +20,24 @@ class Google(accessToken: String) {
     case _ => params
   }
 
-  def request[T](verb: Verbs, apiPath: String, params: Option[Map[String, Option[String]]] = None)(implicit r: Reads[T]): Future[Option[T]] = {
-    val parameters: Map[String, String] = params match {
-      case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
-      case None => Map.empty
-    }
+  def request[T](verb: Verbs, apiPath: String, params: String = "")(implicit r: Reads[T]): Future[Option[T]] = {
+    /** *
+      * val parameters: Map[String, String] = params match {
+      * case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
+      * case None => Map.empty
+      * } ***/
     val effectiveUrl = s"${Constants.API_URL}$apiPath?"
+    val headers = Map(
+      "Authorization" -> Seq(s"Bearer $accessToken"),
+      "Content-Type" -> Seq("application/json")
+    )
     val request: Req = url(effectiveUrl)
       .setMethod(verb.label)
-      .setHeader("Authorization", s"Bearer $accessToken")
+      .setHeaders(headers)
     val requestWithParams = if (verb.label == Verbs.GET.label) {
-      request <<? parameters
+      request
     } else {
-      request << parameters
+      request.setBody(params)
     }
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
@@ -52,16 +57,29 @@ class Google(accessToken: String) {
   }
 
   // TODO: option params
-  def insertCalendarList(id: String, defaultReminders: DefaultReminders, notificationSettings: NotificationSettings): Future[Option[CalendarList]] = {
+  def insertCalendarList(id: String, defaultReminders: Seq[DefaultReminders], notificationSettings: NotificationSettings): Future[Option[CalendarList]] = {
     val apiPath: String = Methods.CALENDAR_LIST
-    val params: Map[String, Option[String]] = Map(
-      "defaultReminders[].method" -> defaultReminders.method,
-      "defaultReminders[].minutes" -> defaultReminders.minutes.map(_.toString), // TODO: 0 to 40320
-      "id" -> Some(id),
-      "notificationSettings.notifications[].method" -> notificationSettings.notifications.headOption.flatMap(v => Some(v.method)),
-      "notificationSettings.notifications[].type" -> notificationSettings.notifications.headOption.flatMap(v => Some(v.`type`))
-    )
-    request[CalendarList](Verbs.POST, apiPath, Some(params))
+    val defaultRemindersString = defaultReminders.map { v =>
+      s"""{"method": "${v.method.getOrElse("")}", "minutes": ${v.minutes.getOrElse("")}}""" // TODO: minutes 0 to 40320
+    }.mkString(",")
+    val notificationsString = notificationSettings.notifications.map { v =>
+      s"""{"method": "${v.method}", "type": "${v.`type`}"}"""
+    }.mkString(",")
+    val params: String =
+      s"""
+           {
+             "defaultReminders": [
+               $defaultRemindersString
+             ],
+             "id": "$id",
+             "notificationSettings": {
+               "notifications": [
+                 $notificationsString
+               ]
+             }
+           }
+        """
+    request[CalendarList](Verbs.POST, apiPath, params)
   }
 
   // TODO: option params

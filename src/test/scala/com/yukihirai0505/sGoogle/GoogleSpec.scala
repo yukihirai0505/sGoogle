@@ -1,6 +1,6 @@
 package com.yukihirai0505.sGoogle
 
-import com.yukihirai0505.sGoogle.model.{NotificationsMethod, NotificationsType, Scope}
+import com.yukihirai0505.sGoogle.model.{DefaultRemindersMethod, NotificationsMethod, NotificationsType, Scope}
 import com.yukihirai0505.sGoogle.responses.auth.OAuth
 import com.yukihirai0505.sGoogle.responses.calendarList._
 import helpers.WebHelper
@@ -92,23 +92,28 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[OAuth]])
   }
 
+  val calendarId = "TODO"
+
+  "deleteCalendarList" should "return empty" in {
+    val request = Await.result(new Google(accessToken).deleteCalendarList(calendarId), Duration.Inf)
+    assert(request.isEmpty)
+  }
+
   "insertCalendarList" should "return a Some[CalendarList]" in {
-    val defaultReminders = DefaultReminders(None, None)
+    val defaultReminders =
+      Seq(
+        DefaultReminders(Some(DefaultRemindersMethod.EMAIL.label), Some(0))
+      )
     val notificationSettings = NotificationSettings(
       Seq(
         Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CREATION.label)
       )
     )
-    val request = Await.result(new Google(accessToken).insertCalendarList("", defaultReminders, notificationSettings), Duration.Inf)
+    val request = Await.result(new Google(accessToken).insertCalendarList(calendarId, defaultReminders, notificationSettings), Duration.Inf)
     request.foreach(v => println(v.summary))
     request should be(anInstanceOf[Some[CalendarList]])
   }
 
-  /***
-  "deleteCalendarList" should "return empty" in {
-    val request = Await.result(new Google(accessToken).deleteCalendarList("TODO"), Duration.Inf)
-    assert(request.isEmpty)
-  }***/
 
   "getCalendarList" should "return a Some[CalendarList]" in {
     val request = Await.result(new Google(accessToken).getCalendarList(), Duration.Inf)
