@@ -47,6 +47,7 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
   val redirectUri: String = testData.getOrElse("redirectUri", "")
   val gmailId: String = testData.getOrElse("gmailId", "")
   val gmailPassword: String = testData.getOrElse("gmailPassword", "")
+  val testCalendarId: String = testData.getOrElse("testCalendarId", "")
   val scopes = Seq(
     Scope.OPEN_ID,
     Scope.EMAIL,
@@ -92,10 +93,8 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[OAuth]])
   }
 
-  val calendarId = "TODO"
-
   "deleteCalendarList" should "return empty" in {
-    val request = Await.result(new Google(accessToken).deleteCalendarList(calendarId), Duration.Inf)
+    val request = Await.result(new Google(accessToken).deleteCalendarList(testCalendarId), Duration.Inf)
     assert(request.isEmpty)
   }
 
@@ -106,10 +105,14 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
       )
     val notificationSettings = NotificationSettings(
       Seq(
-        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CREATION.label)
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CREATION.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CHANGE.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CANCELLATION.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_RESPONSE.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.AGENDA.label)
       )
     )
-    val request = Await.result(new Google(accessToken).insertCalendarList(calendarId, defaultReminders, notificationSettings), Duration.Inf)
+    val request = Await.result(new Google(accessToken).insertCalendarList(testCalendarId, defaultReminders, notificationSettings), Duration.Inf)
     request.foreach(v => println(v.summary))
     request should be(anInstanceOf[Some[CalendarList]])
   }
@@ -127,4 +130,9 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[CalendarListList]])
   }
 
+  "patchCalendarList" should "return a Some[CalendarList]" in {
+    val params = """{ "summaryOverride": "hogehoge" }"""
+    val request = Await.result(new Google(accessToken)patchCalendarList(testCalendarId, params), Duration.Inf)
+    request should be(anInstanceOf[Some[CalendarList]])
+  }
 }

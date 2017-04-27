@@ -46,13 +46,13 @@ class Google(accessToken: String) {
   // TODO: https://developers.google.com/google-apps/calendar/v3/reference/calendarList?hl=ja
 
   def deleteCalendarList(calendarId: String): Future[Option[Seq[String]]] = {
-    val apiPath: String = Methods.CALENDAR_LIST_DELETE format calendarId
+    val apiPath: String = Methods.CALENDAR_LIST_WITH_ID format calendarId
     request[Seq[String]](Verbs.DELETE, apiPath)
   }
 
   // TODO: option params
   def getCalendarList(calendarId: String = "primary"): Future[Option[CalendarList]] = {
-    val apiPath: String = Methods.CALENDAR_LIST_GET format calendarId
+    val apiPath: String = Methods.CALENDAR_LIST_WITH_ID format calendarId
     request[CalendarList](Verbs.GET, apiPath)
   }
 
@@ -88,4 +88,9 @@ class Google(accessToken: String) {
     request[CalendarListList](Verbs.GET, apiPath)
   }
 
+  // TODO:  option params
+  def patchCalendarList(calendarId: String, params: String): Future[Option[CalendarList]] = {
+    val apiPath: String = Methods.CALENDAR_LIST_WITH_ID format calendarId
+    request[CalendarList](Verbs.PATCH, apiPath, params)
+  }
 }
