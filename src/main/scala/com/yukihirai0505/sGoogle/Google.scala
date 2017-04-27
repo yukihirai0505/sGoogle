@@ -4,7 +4,7 @@ import com.yukihirai0505.sGoogle.http.{Request, Verbs}
 import com.yukihirai0505.sGoogle.model.{Constants, Methods}
 import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList, DefaultReminders, NotificationSettings}
 import dispatch._
-import play.api.libs.json.Reads
+import play.api.libs.json.{Json, Reads}
 
 import scala.language.postfixOps
 
@@ -59,23 +59,14 @@ class Google(accessToken: String) {
   // TODO: option params
   def insertCalendarList(id: String, defaultReminders: Seq[DefaultReminders], notificationSettings: NotificationSettings): Future[Option[CalendarList]] = {
     val apiPath: String = Methods.CALENDAR_LIST
-    val defaultRemindersString = defaultReminders.map { v =>
-      s"""{"method": "${v.method.getOrElse("")}", "minutes": ${v.minutes.getOrElse("")}}""" // TODO: minutes 0 to 40320
-    }.mkString(",")
-    val notificationsString = notificationSettings.notifications.map { v =>
-      s"""{"method": "${v.method}", "type": "${v.`type`}"}"""
-    }.mkString(",")
     val params: String =
       s"""
            {
-             "defaultReminders": [
-               $defaultRemindersString
-             ],
+             "defaultReminders": ${Json.toJson(defaultReminders)}
+             ,
              "id": "$id",
              "notificationSettings": {
-               "notifications": [
-                 $notificationsString
-               ]
+               "notifications": ${Json.toJson(notificationSettings.notifications)}
              }
            }
         """
@@ -97,22 +88,13 @@ class Google(accessToken: String) {
   // TODO: option params
   def updateCalendarList(calendarId: String, defaultReminders: Seq[DefaultReminders], notificationSettings: NotificationSettings): Future[Option[CalendarList]] = {
     val apiPath: String = Methods.CALENDAR_LIST_WITH_ID format calendarId
-    val defaultRemindersString = defaultReminders.map { v =>
-      s"""{"method": "${v.method.getOrElse("")}", "minutes": ${v.minutes.getOrElse("")}}""" // TODO: minutes 0 to 40320
-    }.mkString(",")
-    val notificationsString = notificationSettings.notifications.map { v =>
-      s"""{"method": "${v.method}", "type": "${v.`type`}"}"""
-    }.mkString(",")
     val params: String =
       s"""
            {
-             "defaultReminders": [
-               $defaultRemindersString
-             ],
+             "defaultReminders": ${Json.toJson(defaultReminders)}
+             ,
              "notificationSettings": {
-               "notifications": [
-                 $notificationsString
-               ]
+               "notifications": ${Json.toJson(notificationSettings.notifications)}
              }
            }
         """
