@@ -105,11 +105,7 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
       )
     val notificationSettings = NotificationSettings(
       Seq(
-        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CREATION.label),
-        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CHANGE.label),
-        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CANCELLATION.label),
-        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_RESPONSE.label),
-        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.AGENDA.label)
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CREATION.label)
       )
     )
     val request = Await.result(new Google(accessToken).insertCalendarList(testCalendarId, defaultReminders, notificationSettings), Duration.Inf)
@@ -132,7 +128,26 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
 
   "patchCalendarList" should "return a Some[CalendarList]" in {
     val params = """{ "summaryOverride": "hogehoge" }"""
-    val request = Await.result(new Google(accessToken)patchCalendarList(testCalendarId, params), Duration.Inf)
+    val request = Await.result(new Google(accessToken).patchCalendarList(testCalendarId, params), Duration.Inf)
     request should be(anInstanceOf[Some[CalendarList]])
   }
+
+  "updateCalendarList" should "return a Some[CalendarList]" in {
+    val defaultReminders =
+      Seq(
+        DefaultReminders(Some(DefaultRemindersMethod.EMAIL.label), Some(0))
+      )
+    val notificationSettings = NotificationSettings(
+      Seq(
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CREATION.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CHANGE.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_CANCELLATION.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.EVENT_RESPONSE.label),
+        Notifications(method = NotificationsMethod.EMAIL.label, `type` = NotificationsType.AGENDA.label)
+      )
+    )
+    val request = Await.result(new Google(accessToken).updateCalendarList(testCalendarId, defaultReminders, notificationSettings), Duration.Inf)
+    request should be(anInstanceOf[Some[CalendarList]])
+  }
+
 }

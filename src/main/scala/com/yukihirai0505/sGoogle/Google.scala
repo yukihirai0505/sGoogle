@@ -93,4 +93,32 @@ class Google(accessToken: String) {
     val apiPath: String = Methods.CALENDAR_LIST_WITH_ID format calendarId
     request[CalendarList](Verbs.PATCH, apiPath, params)
   }
+
+  // TODO: option params
+  def updateCalendarList(calendarId: String, defaultReminders: Seq[DefaultReminders], notificationSettings: NotificationSettings): Future[Option[CalendarList]] = {
+    val apiPath: String = Methods.CALENDAR_LIST_WITH_ID format calendarId
+    val defaultRemindersString = defaultReminders.map { v =>
+      s"""{"method": "${v.method.getOrElse("")}", "minutes": ${v.minutes.getOrElse("")}}""" // TODO: minutes 0 to 40320
+    }.mkString(",")
+    val notificationsString = notificationSettings.notifications.map { v =>
+      s"""{"method": "${v.method}", "type": "${v.`type`}"}"""
+    }.mkString(",")
+    val params: String =
+      s"""
+           {
+             "defaultReminders": [
+               $defaultRemindersString
+             ],
+             "notificationSettings": {
+               "notifications": [
+                 $notificationsString
+               ]
+             }
+           }
+        """
+    request[CalendarList](Verbs.PUT, apiPath, params)
+  }
+
+  // TODO: i do not understand about watch method => https://developers.google.com/google-apps/calendar/v3/reference/calendarList/watch
+
 }
