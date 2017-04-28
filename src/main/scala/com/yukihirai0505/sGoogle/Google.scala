@@ -3,6 +3,7 @@ package com.yukihirai0505.sGoogle
 import com.yukihirai0505.sGoogle.http.{Request, Verbs}
 import com.yukihirai0505.sGoogle.model.{Constants, Methods}
 import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList, DefaultReminders, NotificationSettings}
+import com.yukihirai0505.sGoogle.responses.calendars.Calendars
 import dispatch._
 import play.api.libs.json.{Json, Reads}
 
@@ -47,9 +48,9 @@ class Google(accessToken: String) {
 
   // TODO: https://developers.google.com/google-apps/calendar/v3/reference/calendarList?hl=ja
 
-  def deleteCalendarList(calendarId: String): Future[Option[Seq[String]]] = {
+  def deleteCalendarList(calendarId: String): Future[Option[String]] = {
     val apiPath: String = Methods.CALENDAR_LIST_WITH_ID format calendarId
-    request[Seq[String]](Verbs.DELETE, apiPath)
+    request[String](Verbs.DELETE, apiPath)
   }
 
   // TODO: option params
@@ -107,10 +108,44 @@ class Google(accessToken: String) {
 
   // Calendars
 
-  def clearCalendars(calendarId: String = "primary") = {
-    val apiPath: String = Methods.CALENDARS_WITH_ID format calendarId
-    request[Seq[String]](Verbs.POST, apiPath)
+  def clearCalendars(calendarId: String = "primary"): Future[Option[String]] = {
+    val apiPath: String = Methods.CALENDARS_CLEAR format calendarId
+    request[String](Verbs.POST, apiPath)
   }
 
-  
+  def deleteCalendars(secondaryCalendarId: String): Future[Option[String]] = {
+    val apiPath: String = Methods.CALENDARS_WITH_ID format secondaryCalendarId
+    request[String](Verbs.DELETE, apiPath)
+  }
+
+  def getCalendars(calendarId: String): Future[Option[Calendars]] = {
+    val apiPath: String = Methods.CALENDARS_WITH_ID format calendarId
+    request[Calendars](Verbs.GET, apiPath)
+  }
+
+  // TODO: option params
+  def insertCalendars(summary: String): Future[Option[Calendars]] = {
+    val apiPath: String = Methods.CALENDARS
+    val params: String = {
+      s"""
+          {
+            "summary": "$summary"
+          }
+       """
+    }
+    request[Calendars](Verbs.POST, apiPath, params)
+  }
+
+  def patchCalendars(calendarId: String, calendars: Calendars) = {
+    val apiPath = Methods.CALENDARS_WITH_ID format calendarId
+    val params = Json.toJson(calendars).toString
+    request[Calendars](Verbs.PATCH, apiPath, params)
+  }
+
+  def updateCalendars(calendarId: String, calendars: Calendars) = {
+    val apiPath = Methods.CALENDARS_WITH_ID format calendarId
+    val params = Json.toJson(calendars).toString
+    request[Calendars](Verbs.PUT, apiPath, params)
+  }
+
 }

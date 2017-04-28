@@ -3,6 +3,7 @@ package com.yukihirai0505.sGoogle
 import com.yukihirai0505.sGoogle.model.{DefaultRemindersMethod, NotificationsMethod, NotificationsType, Scope}
 import com.yukihirai0505.sGoogle.responses.auth.OAuth
 import com.yukihirai0505.sGoogle.responses.calendarList._
+import com.yukihirai0505.sGoogle.responses.calendars.Calendars
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
@@ -156,5 +157,54 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     val request = Await.result(new Google(accessToken).clearCalendars(testCalendarId), Duration.Inf)
     assert(request.isEmpty)
   }***/
+
+  var secondaryCalendarId = ""
+
+  "insertCalendars" should "return Some[Calendars]" in {
+    val summary = "fugafuga"
+    val request = Await.result(new Google(accessToken).insertCalendars(summary), Duration.Inf)
+    secondaryCalendarId = request.fold("")(v => v.id.getOrElse(""))
+    request should be(anInstanceOf[Some[Calendars]])
+  }
+
+  "getCalendars" should "return Some[Calendars]" in {
+    val request = Await.result(new Google(accessToken).getCalendars(secondaryCalendarId), Duration.Inf)
+    request should be(anInstanceOf[Some[Calendars]])
+  }
+
+  "updateCalendars" should "return Some[Calendars]" in {
+    val calendars = Calendars(
+      kind = None,
+      etag = None,
+      id = None,
+      summary = Some("fugafuga2"),
+      description = None,
+      location = None,
+      timeZone = None
+    )
+    val request = Await.result(new Google(accessToken).updateCalendars(secondaryCalendarId, calendars), Duration.Inf)
+    request.flatMap(_.summary) should be(Some("fugafuga2"))
+    request should be(anInstanceOf[Some[Calendars]])
+  }
+
+  "patchCalendars" should "return Some[Calendars]" in {
+    val calendars = Calendars(
+      kind = None,
+      etag = None,
+      id = None,
+      summary = None,
+      description = None,
+      location = None,
+      timeZone = Some("Europe/Zurich")
+    )
+    val request = Await.result(new Google(accessToken).patchCalendars(secondaryCalendarId, calendars), Duration.Inf)
+    request.flatMap(_.timeZone) should be(Some("Europe/Zurich"))
+    request should be(anInstanceOf[Some[Calendars]])
+  }
+
+  "deleteCalendars" should "return empty" in {
+    val request = Await.result(new Google(accessToken).deleteCalendars(secondaryCalendarId), Duration.Inf)
+    assert(request.isEmpty)
+  }
 
 }

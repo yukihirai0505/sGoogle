@@ -8,5 +8,7 @@ object Methods {
   val CALENDAR_LIST = "/calendar/v3/users/me/calendarList"
   val CALENDAR_LIST_WITH_ID = s"$CALENDAR_LIST/%s"
   // https://developers.google.com/google-apps/calendar/v3/reference/calendars
-  val CALENDARS_WITH_ID = "/calendar/v3/calendars/%s/clear"
+  val CALENDARS = "/calendar/v3/calendars"
+  val CALENDARS_WITH_ID = s"$CALENDARS/%s"
+  val CALENDARS_CLEAR = s"$CALENDARS_WITH_ID/clear"
 }
