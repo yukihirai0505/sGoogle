@@ -43,6 +43,8 @@ class Google(accessToken: String) {
     Request.send[T](requestWithParams)
   }
 
+  // CalendarList
+
   // TODO: https://developers.google.com/google-apps/calendar/v3/reference/calendarList?hl=ja
 
   def deleteCalendarList(calendarId: String): Future[Option[Seq[String]]] = {
@@ -103,4 +105,12 @@ class Google(accessToken: String) {
 
   // TODO: i do not understand about watch method => https://developers.google.com/google-apps/calendar/v3/reference/calendarList/watch
 
+  // Calendars
+
+  def clearCalendars(calendarId: String = "primary") = {
+    val apiPath: String = Methods.CALENDARS_WITH_ID format calendarId
+    request[Seq[String]](Verbs.POST, apiPath)
+  }
+
+  
 }

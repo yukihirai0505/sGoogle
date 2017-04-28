@@ -150,4 +150,11 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[CalendarList]])
   }
 
+  // dangerous => clear all primary calendar events
+  /***
+  "clearCalendars" should "return empty" in {
+    val request = Await.result(new Google(accessToken).clearCalendars(testCalendarId), Duration.Inf)
+    assert(request.isEmpty)
+  }***/
+
 }
