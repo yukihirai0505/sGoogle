@@ -4,6 +4,8 @@ import com.yukihirai0505.sGoogle.model.{DefaultRemindersMethod, NotificationsMet
 import com.yukihirai0505.sGoogle.responses.auth.OAuth
 import com.yukihirai0505.sGoogle.responses.calendarList._
 import com.yukihirai0505.sGoogle.responses.calendars.Calendars
+import com.yukihirai0505.sGoogle.responses.common.DefaultReminders
+import com.yukihirai0505.sGoogle.responses.events.Events
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
@@ -207,4 +209,8 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     assert(request.isEmpty)
   }
 
+  "listEvents" should "return Some[EventList]" in {
+    val request = Await.result(new Google(accessToken).listEvents(testCalendarId), Duration.Inf)
+    request should be(anInstanceOf[Some[Events]])
+  }
 }

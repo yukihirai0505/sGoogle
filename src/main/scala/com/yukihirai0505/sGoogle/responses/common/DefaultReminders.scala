@@ -1,4 +1,4 @@
-package com.yukihirai0505.sGoogle.responses.calendarList
+package com.yukihirai0505.sGoogle.responses.common
 
 case class DefaultReminders(
                              method: Option[String],

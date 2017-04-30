@@ -1,5 +1,8 @@
 package com.yukihirai0505.sGoogle.responses.calendarList
 
+import com.yukihirai0505.sGoogle.responses.common.DefaultReminders
+import play.api.libs.json.Json
+
 case class CalendarList(
                          kind: String,
                          etag: String,
@@ -20,8 +23,6 @@ case class CalendarList(
                          primary: Option[Boolean],
                          deleted: Option[Boolean]
                        )
-
-import play.api.libs.json.Json
 
 object CalendarList {
   implicit val CalendarListFormat = Json.format[CalendarList]

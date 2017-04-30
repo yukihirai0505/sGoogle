@@ -2,8 +2,10 @@ package com.yukihirai0505.sGoogle
 
 import com.yukihirai0505.sGoogle.http.{Request, Verbs}
 import com.yukihirai0505.sGoogle.model.{Constants, Methods}
-import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList, DefaultReminders, NotificationSettings}
+import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList, NotificationSettings}
 import com.yukihirai0505.sGoogle.responses.calendars.Calendars
+import com.yukihirai0505.sGoogle.responses.common.DefaultReminders
+import com.yukihirai0505.sGoogle.responses.events.EventsList
 import dispatch._
 import play.api.libs.json.{Json, Reads}
 
@@ -146,6 +148,13 @@ class Google(accessToken: String) {
     val apiPath = Methods.CALENDARS_WITH_ID format calendarId
     val params = Json.toJson(calendars).toString
     request[Calendars](Verbs.PUT, apiPath, params)
+  }
+
+  // Events
+
+  def listEvents(calendarId: String) = {
+    val apiPath = Methods.EVENTS_WITH_ID format calendarId
+    request[EventsList](Verbs.GET, apiPath)
   }
 
 }
