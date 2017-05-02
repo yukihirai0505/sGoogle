@@ -96,11 +96,6 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[OAuth]])
   }
 
-  "deleteCalendarList" should "return empty" in {
-    val request = Await.result(new Google(accessToken).deleteCalendarList(testCalendarId), Duration.Inf)
-    assert(request.isEmpty)
-  }
-
   "insertCalendarList" should "return a Some[CalendarList]" in {
     val defaultReminders =
       Seq(
@@ -115,7 +110,6 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     request.foreach(v => println(v.summary))
     request should be(anInstanceOf[Some[CalendarList]])
   }
-
 
   "getCalendarList" should "return a Some[CalendarList]" in {
     val request = Await.result(new Google(accessToken).getCalendarList(), Duration.Inf)
@@ -151,6 +145,11 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
     )
     val request = Await.result(new Google(accessToken).updateCalendarList(testCalendarId, defaultReminders, notificationSettings), Duration.Inf)
     request should be(anInstanceOf[Some[CalendarList]])
+  }
+
+  "deleteCalendarList" should "return empty" in {
+    val request = Await.result(new Google(accessToken).deleteCalendarList(testCalendarId), Duration.Inf)
+    assert(request.isEmpty)
   }
 
   // dangerous => clear all primary calendar events
