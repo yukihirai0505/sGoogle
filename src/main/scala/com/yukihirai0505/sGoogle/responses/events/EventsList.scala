@@ -17,8 +17,8 @@ case class EventsList(
                        items: Option[Seq[Events]]
                      )
 
-import play.api.libs.json.Json
+import ai.x.play.json.Jsonx
 
 object EventsList {
-  implicit val EventsListFormat = Json.format[EventsList]
+  implicit lazy val EventsListFormat = Jsonx.formatCaseClass[EventsList]
 }

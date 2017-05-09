@@ -14,6 +14,7 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" % "play-json_2.11" % "2.5.9",
+  "ai.x" %% "play-json-extensions" % "0.8.0",
   "net.databinder.dispatch" %% "dispatch-core" % "0.11.3",
   "com.netaporter" %% "scala-uri" % "0.4.16",
   "com.github.tototoshi" %% "play-json-naming" % "1.1.0",
