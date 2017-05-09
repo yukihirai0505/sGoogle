@@ -11,16 +11,18 @@ case class Events(
                    summary: Option[String],
                    description: Option[String],
                    location: Option[String],
+
                    colorId: Option[String],
                    creator: Option[Creator],
                    organizer: Option[Organizer],
                    start: Option[EventsDate],
                    end: Option[EventsDate],
                    endTimeUnspecified: Option[Boolean],
-                   recurrence: Option[Seq[String]] //FIXME: over 22 fields,
-//                   recurringEventId: Option[String],
-//                   originalStartTime: Option[EventsDate],
-//                   transparency: Option[String],
+                   recurrence: Option[Seq[String]],
+                   recurringEventId: Option[String],
+                   originalStartTime: Option[EventsDate],
+                   transparency: Option[String]
+
 //                   visibility: Option[String],
 //                   iCalUID: Option[String],
 //                   sequence: Option[Int],
