@@ -2,7 +2,8 @@ package com.yukihirai0505.sGoogle
 
 import java.net.URLDecoder
 
-import com.yukihirai0505.sGoogle.http.{Request, Verbs}
+import com.yukihirai0505.com.scala.Request
+import com.yukihirai0505.com.scala.constants.Verbs
 import com.yukihirai0505.sGoogle.model.{Constants, OAuthConstants, Scope}
 import com.yukihirai0505.sGoogle.responses.auth._
 import dispatch._

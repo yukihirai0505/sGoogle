@@ -149,7 +149,7 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
 
   "deleteCalendarList" should "return empty" in {
     val request = Await.result(new Google(accessToken).deleteCalendarList(testCalendarId), Duration.Inf)
-    assert(request.isEmpty)
+    assert(request.nonEmpty)
   }
 
   // dangerous => clear all primary calendar events
@@ -205,7 +205,8 @@ class GoogleSpec extends FlatSpec with Matchers with WebHelper {
 
   "deleteCalendars" should "return empty" in {
     val request = Await.result(new Google(accessToken).deleteCalendars(secondaryCalendarId), Duration.Inf)
-    assert(request.isEmpty)
+    println(request)
+    assert(request.nonEmpty)
   }
 
   "listEvents" should "return Some[EventList]" in {

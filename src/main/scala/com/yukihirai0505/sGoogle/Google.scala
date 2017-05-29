@@ -1,13 +1,15 @@
 package com.yukihirai0505.sGoogle
 
-import com.yukihirai0505.sGoogle.http.{Request, Verbs}
+import play.api.libs.json.{Json, Reads}
+
+import com.yukihirai0505.com.scala.Request
+import com.yukihirai0505.com.scala.constants.Verbs
 import com.yukihirai0505.sGoogle.model.{Constants, Methods}
 import com.yukihirai0505.sGoogle.responses.calendarList.{CalendarList, CalendarListList, NotificationSettings}
 import com.yukihirai0505.sGoogle.responses.calendars.Calendars
 import com.yukihirai0505.sGoogle.responses.common.DefaultReminders
 import com.yukihirai0505.sGoogle.responses.events.EventsList
 import dispatch._
-import play.api.libs.json.{Json, Reads}
 
 import scala.language.postfixOps
 
@@ -24,11 +26,6 @@ class Google(accessToken: String) {
   }
 
   def request[T](verb: Verbs, apiPath: String, params: String = "")(implicit r: Reads[T]): Future[Option[T]] = {
-    /** *
-      * val parameters: Map[String, String] = params match {
-      * case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
-      * case None => Map.empty
-      * } ***/
     val effectiveUrl = s"${Constants.API_URL}$apiPath?"
     val headers = Map(
       "Authorization" -> Seq(s"Bearer $accessToken"),
@@ -37,11 +34,7 @@ class Google(accessToken: String) {
     val request: Req = url(effectiveUrl)
       .setMethod(verb.label)
       .setHeaders(headers)
-    val requestWithParams = if (verb.label == Verbs.GET.label) {
-      request
-    } else {
-      request.setBody(params)
-    }
+    val requestWithParams = if (verb.label == Verbs.GET.label) request else request.setBody(params)
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
   }
